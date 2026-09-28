@@ -132,3 +132,20 @@ output "was_server_private_ip" {
   description = "Private IP address of the WAS server"
   value       = module.compute.was_server_private_ip
 }
+
+// MARK: - Application Load Balancer
+
+output "load_balancer_no" {
+  description = "Public Application Load Balancer identifier"
+  value       = module.loadbalancer.load_balancer_no
+}
+
+output "load_balancer_domain" {
+  description = "Public domain assigned to the Application Load Balancer"
+  value       = module.loadbalancer.load_balancer_domain
+}
+
+output "web_target_group_no" {
+  description = "Web target group identifier"
+  value       = module.loadbalancer.target_group_no
+}
