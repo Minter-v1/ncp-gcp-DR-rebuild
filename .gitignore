@@ -1,0 +1,76 @@
+# MARK: Operating system
+
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# MARK: IDE
+
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# MARK: Local environment
+
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+.direnv/
+.envrc
+
+# MARK: Credentials
+
+*.pem
+*.key
+*.p12
+*.pfx
+**/service-account*.json
+**/credentials*.json
+**/.secrets/
+
+# MARK: Terraform
+
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+!*.tfvars.json.example
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+*.tfplan
+*.plan
+
+# MARK: Ansible
+
+.ansible/
+*.retry
+.vault-password
+.vault_pass
+vault-password*
+
+# MARK: Kubernetes
+
+.kube/
+kubeconfig
+kubeconfig.*
+*.kubeconfig
+
+# MARK: Logs and temporary files
+
+*.log
+tmp/
+.temp/
