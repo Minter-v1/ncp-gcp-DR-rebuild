@@ -53,3 +53,14 @@ module "database" {
   mysql_user_host           = var.mysql_user_host
   mysql_database_name       = var.mysql_database_name
 }
+
+// MARK: - Load Balancer Module
+
+module "loadbalancer" {
+  source = "./modules/loadbalancer" // NOTE: - 모듈 연결
+
+  resource_prefix       = local.resource_prefix
+  vpc_no                = module.network.vpc_no
+  alb_subnet_no         = module.network.alb_subnet_no
+  web_server_instance_no = module.compute.web_server_instance_no
+}
