@@ -20,12 +20,12 @@ resource "ncloud_lb_target_group" "web" {
   name        = "${var.resource_prefix}-tg-web"
   description = "Target group for the private Web server"
 
-  vpc_no     = var.vpc_no
+  vpc_no      = var.vpc_no
   target_type = "VSVR"
   protocol    = "HTTP"
   port        = 3000
 
-  algorithm_type    = "RR"
+  algorithm_type     = "RR"
   use_sticky_session = false
   use_proxy_protocol = false
 
