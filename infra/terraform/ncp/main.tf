@@ -3,13 +3,16 @@
 module "network" {
   source = "./modules/network" # NOTE: - 모듈 연결
 
-  resource_prefix = local.resource_prefix
-  ncloud_zone     = var.ncloud_zone
-  vpc_cidr        = var.vpc_cidr
-  alb_subnet_cidr = var.alb_subnet_cidr
-  web_subnet_cidr = var.web_subnet_cidr
-  was_subnet_cidr = var.was_subnet_cidr
-  db_subnet_cidr  = var.db_subnet_cidr
+  resource_prefix         = local.resource_prefix
+  ncloud_zone             = var.ncloud_zone
+  vpc_cidr                = var.vpc_cidr
+  alb_subnet_cidr         = var.alb_subnet_cidr
+  web_subnet_cidr         = var.web_subnet_cidr
+  was_subnet_cidr         = var.was_subnet_cidr
+  db_subnet_cidr          = var.db_subnet_cidr
+  bastion_subnet_cidr     = var.bastion_subnet_cidr
+  nat_gateway_subnet_cidr = var.nat_gateway_subnet_cidr
+  admin_cidr              = var.admin_cidr
 }
 
 // MARK: - Security Module
@@ -64,3 +67,4 @@ module "loadbalancer" {
   alb_subnet_no          = module.network.alb_subnet_no
   web_server_instance_no = module.compute.web_server_instance_no
 }
+
