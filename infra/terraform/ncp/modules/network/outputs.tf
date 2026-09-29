@@ -24,3 +24,15 @@ output "db_subnet_no" {
   description = "Private DB subnet identifier"
   value       = ncloud_subnet.db.id
 }
+
+// MARK: - 관리 및 아웃바운드 Subnet 식별자
+
+output "bastion_subnet_no" {
+  description = "Public Bastion subnet identifier"
+  value       = ncloud_subnet.bastion.id
+}
+
+output "nat_gateway_subnet_no" {
+  description = "Public NAT Gateway subnet identifier"
+  value       = ncloud_subnet.nat_gateway.id
+}

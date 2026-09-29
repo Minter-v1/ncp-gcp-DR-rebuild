@@ -15,6 +15,11 @@ variable "was_subnet_no" {
   type        = string
 }
 
+variable "bastion_subnet_no" {
+  description = "Public Bastion subnet identifier"
+  type        = string
+}
+
 
 
 variable "web_acg_no" {
@@ -24,6 +29,11 @@ variable "web_acg_no" {
 
 variable "was_acg_no" {
   description = "WAS Access Control Group identifier"
+  type        = string
+}
+
+variable "bastion_acg_no" {
+  description = "Bastion Access Control Group identifier"
   type        = string
 }
 

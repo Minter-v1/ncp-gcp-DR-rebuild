@@ -149,3 +149,30 @@ output "web_target_group_no" {
   description = "Web target group identifier"
   value       = module.loadbalancer.target_group_no
 }
+
+// MARK: - 관리 및 아웃바운드 Subnet
+
+output "bastion_subnet_no" {
+  description = "Public Bastion subnet identifier"
+  value       = module.network.bastion_subnet_no
+}
+
+output "nat_gateway_subnet_no" {
+  description = "Public NAT Gateway subnet identifier"
+  value       = module.network.nat_gateway_subnet_no
+}
+
+output "bastion_server_instance_no" {
+  description = "Bastion server instance identifier"
+  value       = module.compute.bastion_server_instance_no
+}
+
+output "bastion_private_ip" {
+  description = "Private IP address of the Bastion server"
+  value       = module.compute.bastion_private_ip
+}
+
+output "bastion_public_ip" {
+  description = "Public IP address of the Bastion server"
+  value       = module.compute.bastion_public_ip
+}

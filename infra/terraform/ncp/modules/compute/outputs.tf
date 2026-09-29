@@ -61,3 +61,25 @@ output "was_server_private_ip" {
   description = "Private IP address of the WAS server"
   value       = ncloud_server.was.private_ip
 }
+
+// MARK: - Bastion Server 식별자
+
+output "bastion_network_interface_no" {
+  description = "Bastion network interface identifier"
+  value       = ncloud_network_interface.bastion.id
+}
+
+output "bastion_server_instance_no" {
+  description = "Bastion server instance identifier"
+  value       = ncloud_server.bastion.id
+}
+
+output "bastion_private_ip" {
+  description = "Private IP address of the Bastion server"
+  value       = ncloud_server.bastion.private_ip
+}
+
+output "bastion_public_ip" {
+  description = "Public IP address of the Bastion server"
+  value       = ncloud_public_ip.bastion.public_ip
+}

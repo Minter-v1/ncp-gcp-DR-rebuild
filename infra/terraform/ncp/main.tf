@@ -24,6 +24,7 @@ module "security" {
   vpc_no          = module.network.vpc_no
   alb_subnet_cidr = var.alb_subnet_cidr
   db_subnet_cidr  = var.db_subnet_cidr
+  admin_cidr      = var.admin_cidr
 }
 
 // MARK: - Compute Module
@@ -34,8 +35,10 @@ module "compute" {
   resource_prefix        = local.resource_prefix
   web_subnet_no          = module.network.web_subnet_no
   was_subnet_no          = module.network.was_subnet_no
+  bastion_subnet_no      = module.network.bastion_subnet_no
   web_acg_no             = module.security.web_acg_no
   was_acg_no             = module.security.was_acg_no
+  bastion_acg_no         = module.security.bastion_acg_no
   server_image_name      = var.server_image_name
   server_hypervisor_type = var.server_hypervisor_type
   server_spec_code       = var.server_spec_code

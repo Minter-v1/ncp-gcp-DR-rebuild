@@ -19,3 +19,8 @@ variable "db_subnet_cidr" {
   description = "CIDR block assigned to the managed database subnet"
   type        = string
 }
+
+variable "admin_cidr" {
+  description = "Administrator CIDR allowed to access the Bastion host"
+  type        = string
+}

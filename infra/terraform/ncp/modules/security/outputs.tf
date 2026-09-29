@@ -9,3 +9,8 @@ output "was_acg_no" {
   description = "WAS Access Control Group identifier"
   value       = ncloud_access_control_group.was.id
 }
+
+output "bastion_acg_no" {
+  description = "Bastion Access Control Group identifier"
+  value       = ncloud_access_control_group.bastion.id
+}
