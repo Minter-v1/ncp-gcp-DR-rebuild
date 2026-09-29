@@ -1,0 +1,75 @@
+// MARK: - Custom VPC
+
+resource "google_compute_network" "standby" {
+  name                    = "${var.resource_prefix}-vpc"
+  auto_create_subnetworks = false
+  routing_mode            = "REGIONAL"
+}
+
+// MARK: - GKE Subnet
+
+resource "google_compute_subnetwork" "gke" {
+  name          = "${var.resource_prefix}-gke-subnet"
+  region        = var.region
+  network       = google_compute_network.standby.id
+  ip_cidr_range = var.gke_subnet_cidr
+
+  private_ip_google_access = true
+
+  // NOTE: - GKE Pod와 Service는 Node 대역과 분리된 Secondary Range를 사용
+
+  secondary_ip_range {
+    range_name    = "${var.resource_prefix}-pod-range"
+    ip_cidr_range = var.gke_pod_cidr
+  }
+
+  secondary_ip_range {
+    range_name    = "${var.resource_prefix}-service-range"
+    ip_cidr_range = var.gke_service_cidr
+  }
+}
+
+// MARK: - Standby Database Subnet
+
+resource "google_compute_subnetwork" "database" {
+  name          = "${var.resource_prefix}-db-subnet"
+  region        = var.region
+  network       = google_compute_network.standby.id
+  ip_cidr_range = var.database_subnet_cidr
+
+  private_ip_google_access = true # NOTE: - 외부 IP가 없는 리소스가 Google API에 접근할 수 있게 함
+}
+
+// MARK: - Cloud Router
+
+resource "google_compute_router" "standby" {
+  name    = "${var.resource_prefix}-router"
+  region  = var.region
+  network = google_compute_network.standby.id
+}
+
+// MARK: - Cloud NAT
+
+resource "google_compute_router_nat" "standby" {
+  name   = "${var.resource_prefix}-nat"
+  region = var.region
+  router = google_compute_router.standby.name
+
+  nat_ip_allocate_option             = "AUTO_ONLY"
+  source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
+
+  subnetwork {
+    name                    = google_compute_subnetwork.gke.id
+    source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
+  }
+
+  subnetwork {
+    name                    = google_compute_subnetwork.database.id
+    source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
+  }
+
+  log_config {
+    enable = true
+    filter = "ERRORS_ONLY"
+  }
+}
