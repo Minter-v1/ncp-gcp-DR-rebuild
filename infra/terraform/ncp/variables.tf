@@ -62,7 +62,26 @@ variable "db_subnet_cidr" {
   default     = "10.0.4.0/24"
 }
 
+variable "bastion_subnet_cidr" {
+  description = "CIDR block assigned to the public Bastion subnet"
+  type        = string
+  default     = "10.0.5.0/24"
+}
+
+variable "nat_gateway_subnet_cidr" {
+  description = "CIDR block assigned to the public NAT Gateway subnet"
+  type        = string
+  default     = "10.0.6.0/24"
+}
+
+variable "admin_cidr" {
+  description = "Administrator public IP CIDR allowed to access the Bastion host"
+  type        = string
+  default     = "0.0.0.0/0" # NOTE: - 자주 사용하는 IP가 없음
+}
+
 // MARK: - 서버 이미지 및 스펙 변수
+
 variable "server_image_name" {
   description = "Base image name used by NCP servers"
   type        = string

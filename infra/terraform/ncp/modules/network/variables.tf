@@ -36,3 +36,18 @@ variable "db_subnet_cidr" {
   description = "CIDR block assigned to the private DB subnet"
   type        = string
 }
+
+variable "bastion_subnet_cidr" {
+  description = "CIDR block assigned to the public Bastion subnet"
+  type        = string
+}
+
+variable "nat_gateway_subnet_cidr" {
+  description = "CIDR block assigned to the public NAT Gateway subnet"
+  type        = string
+}
+
+variable "admin_cidr" {
+  description = "Administrator public IP CIDR allowed to access the Bastion host"
+  type        = string
+}
