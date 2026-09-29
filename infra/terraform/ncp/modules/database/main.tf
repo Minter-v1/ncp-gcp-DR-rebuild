@@ -5,17 +5,16 @@ resource "ncloud_mysql" "active" {
   server_name_prefix = "${var.resource_prefix}-db"
   subnet_no          = var.db_subnet_no
 
-  image_product_code = data.ncloud_mysql_image_products.selected.image_product_list[0].product_code
+  image_product_code  = data.ncloud_mysql_image_products.selected.image_product_list[0].product_code
   engine_version_code = var.mysql_engine_version_code
-  data_storage_type   = "CB2"
 
   user_name     = var.mysql_user_name
   user_password = var.mysql_user_password
   host_ip       = var.mysql_user_host
   database_name = var.mysql_database_name
 
-  is_ha                        = false # NOTE: - 현재 단일 존
-  is_backup                    = false # NOTE: - 실험 환경에 백업 필요 없음
+  is_ha     = false # NOTE: - 현재 단일 존
+  is_backup = false # NOTE: - 실험 환경에 백업 필요 없음
 }
 
 // MARK: - MySQL ACG 규칙
