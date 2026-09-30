@@ -24,3 +24,10 @@ output "node_service_account_email" {
   description = "Email of the GKE node service account"
   value       = google_service_account.gke_nodes.email
 }
+
+// MARK: - WAS Runtime Identity
+
+output "was_service_account_email" {
+  description = "Google Service Account email used by the WAS workload"
+  value       = google_service_account.was_runtime.email
+}

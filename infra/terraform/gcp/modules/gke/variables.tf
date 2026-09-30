@@ -59,3 +59,36 @@ variable "master_ipv4_cidr_block" {
   description = "Private CIDR assigned to the GKE control plane"
   type        = string
 }
+
+// MARK: - WAS Workload Identity 변수
+
+variable "was_namespace" {
+  description = "Kubernetes namespace used by the WAS workload"
+  type        = string
+  default     = "greentech"
+}
+
+variable "was_service_account_name" {
+  description = "Kubernetes ServiceAccount name used by the WAS workload"
+  type        = string
+  default     = "greentech-was"
+}
+
+// MARK: - WAS Secret Manager 접근 대상
+
+variable "was_secret_ids" {
+  description = "Secret Manager secret identifiers accessible by the WAS workload"
+  type        = set(string)
+
+  default = [
+    "greentech-db-url",
+    "greentech-db-username",
+    "greentech-db-password",
+    "greentech-jwt-secret",
+    "greentech-field-encryption-key",
+    "greentech-admin-username",
+    "greentech-admin-password",
+    "greentech-storage-access-key",
+    "greentech-storage-secret-key"
+  ]
+}

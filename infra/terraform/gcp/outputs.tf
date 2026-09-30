@@ -66,3 +66,56 @@ output "gke_node_service_account_email" {
   description = "Email of the GKE node service account"
   value       = module.gke.node_service_account_email
 }
+
+// MARK: - Private Service Access
+
+output "private_service_range_name" {
+  description = "Name of the Cloud SQL private service access range"
+  value       = module.network.private_service_range_name
+}
+
+output "private_service_connection_id" {
+  description = "Identifier of the private service networking connection"
+  value       = module.network.private_service_connection_id
+}
+
+// MARK: - Cloud SQL Standby
+
+output "cloud_sql_instance_name" {
+  description = "Cloud SQL standby instance name"
+  value       = module.database.instance_name
+}
+
+output "cloud_sql_connection_name" {
+  description = "Cloud SQL standby connection name"
+  value       = module.database.connection_name
+}
+
+output "cloud_sql_private_ip_address" {
+  description = "Cloud SQL standby private IP address"
+  value       = module.database.private_ip_address
+}
+
+output "cloud_sql_database_name" {
+  description = "Cloud SQL application database name"
+  value       = module.database.database_name
+}
+
+// MARK: - WAS Runtime Identity
+
+output "was_service_account_email" {
+  description = "Google Service Account email used by the WAS workload"
+  value       = module.gke.was_service_account_email
+}
+
+// MARK: - Global Load Balancer Public IP
+
+output "web_global_ip_name" {
+  description = "Name of the global static IP reserved for the Web load balancer"
+  value       = module.network.web_global_ip_name
+}
+
+output "web_global_ip_address" {
+  description = "Global static IP reserved for the Web load balancer"
+  value       = module.network.web_global_ip_address
+}

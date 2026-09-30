@@ -1,0 +1,21 @@
+# MARK: - WAS Internal Service
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: greentech-was
+  namespace: greentech
+  labels:
+    app.kubernetes.io/name: greentech-was
+    app.kubernetes.io/component: backend
+spec:
+  type: ClusterIP
+
+  selector:
+    app.kubernetes.io/name: greentech-was
+
+  ports:
+    - name: http
+      protocol: TCP
+      port: 41783
+      targetPort: http

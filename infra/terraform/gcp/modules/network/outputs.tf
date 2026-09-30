@@ -50,3 +50,28 @@ output "nat_name" {
   description = "Name of the Cloud NAT"
   value       = google_compute_router_nat.standby.name
 }
+
+// MARK: - Private Service Access
+
+output "private_service_range_name" {
+  description = "Name of the allocated private service access range"
+  value       = google_compute_global_address.private_service_access.name
+}
+
+output "private_service_connection_id" {
+  description = "Identifier of the private service networking connection"
+  value       = google_service_networking_connection.private_service_access.id
+}
+
+
+// MARK: - Global Load Balancer Public IP
+
+output "web_global_ip_name" {
+  description = "Name of the global static IP reserved for the Web load balancer"
+  value       = google_compute_global_address.web.name
+}
+
+output "web_global_ip_address" {
+  description = "Global static IP reserved for the Web load balancer"
+  value       = google_compute_global_address.web.address
+}

@@ -73,3 +73,30 @@ resource "google_compute_router_nat" "standby" {
     filter = "ERRORS_ONLY"
   }
 }
+
+// MARK: - Private Service Access
+
+resource "google_compute_global_address" "private_service_access" {
+  name          = "${var.resource_prefix}-private-service-range"
+  purpose       = "VPC_PEERING"
+  address_type  = "INTERNAL"
+  prefix_length = 24 # NOTE: - GCP가 현재 VPC와 충돌하지 않는 내부 대역을 할당
+  network       = google_compute_network.standby.id
+}
+
+// NOTE: - Cloud SQL Private IP는 일반 Subnet이 아닌 Service Networking Peering 대역을 사용
+
+resource "google_service_networking_connection" "private_service_access" {
+  network                 = google_compute_network.standby.id
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [google_compute_global_address.private_service_access.name]
+}
+
+
+// MARK: - Global Load Balancer Public IP
+
+resource "google_compute_global_address" "web" {
+  name         = "${var.resource_prefix}-web-ip"
+  address_type = "EXTERNAL"
+  ip_version   = "IPV4"
+}

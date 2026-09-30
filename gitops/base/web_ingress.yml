@@ -1,0 +1,17 @@
+# MARK: - Web External Ingress
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: greentech-web
+  namespace: greentech
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.global-static-ip-name: "dr-rebuild-lab-web-ip"
+    kubernetes.io/ingress.allow-http: "true"
+spec:
+  defaultBackend:
+    service:
+      name: greentech-web
+      port:
+        name: http

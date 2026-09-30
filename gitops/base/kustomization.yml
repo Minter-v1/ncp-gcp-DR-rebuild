@@ -1,0 +1,17 @@
+# MARK: - Greentech Base Resources
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yml
+  - service_account.yml
+  - secret_provider_class.yml
+  - was_config_map.yml
+  - was_deployment.yml
+  - was_service.yml
+  - web_config_map.yml
+  - web_deployment.yml
+  - web_backend_config.yml
+  - web_service.yml
+  - web_ingress.yml

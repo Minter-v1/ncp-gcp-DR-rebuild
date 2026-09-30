@@ -29,3 +29,17 @@ module "gke" {
   max_node_count         = var.gke_max_node_count
   master_ipv4_cidr_block = var.gke_master_cidr
 }
+
+// MARK: - Cloud SQL Standby
+
+module "database" {
+  source = "./modules/database"
+
+  project_id                 = var.project_id
+  resource_prefix            = var.resource_prefix
+  region                     = var.region
+  network_id                 = module.network.network_id
+  private_service_range_name = module.network.private_service_range_name
+
+  depends_on = [module.network]
+}

@@ -1,0 +1,122 @@
+# MARK: - WAS Deployment
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: greentech-was
+  namespace: greentech
+  labels:
+    app.kubernetes.io/name: greentech-was
+    app.kubernetes.io/component: backend
+spec:
+  replicas: 1
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: greentech-was
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: greentech-was
+        app.kubernetes.io/component: backend
+    spec:
+      serviceAccountName: greentech-was
+      terminationGracePeriodSeconds: 30
+
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+
+      containers:
+        - name: greentech-was
+          image: asia-northeast3-docker.pkg.dev/ncp-gcp-dr-v2/dr-rebuild-lab-images/greentech-was:7db818c
+          imagePullPolicy: IfNotPresent
+
+          # NOTE: - CSI 파일을 애플리케이션 환경변수로 변환
+          command:
+            - sh
+            - -c
+          args:
+            - |
+              set -eu
+              export DB_URL="$(cat /mnt/secrets-store/DB_URL)"
+              export DB_USERNAME="$(cat /mnt/secrets-store/DB_USERNAME)"
+              export DB_PASSWORD="$(cat /mnt/secrets-store/DB_PASSWORD)"
+              export JWT_SECRET="$(cat /mnt/secrets-store/JWT_SECRET)"
+              export FIELD_ENCRYPTION_KEY="$(cat /mnt/secrets-store/FIELD_ENCRYPTION_KEY)"
+              export ADMIN_USERNAME="$(cat /mnt/secrets-store/ADMIN_USERNAME)"
+              export ADMIN_PASSWORD="$(cat /mnt/secrets-store/ADMIN_PASSWORD)"
+              export NCP_STORAGE_ACCESS_KEY="$(cat /mnt/secrets-store/NCP_STORAGE_ACCESS_KEY)"
+              export NCP_STORAGE_SECRET_KEY="$(cat /mnt/secrets-store/NCP_STORAGE_SECRET_KEY)"
+              exec java ${JAVA_OPTS} -jar /app/app.jar
+
+          envFrom:
+            - configMapRef:
+                name: greentech-was-config
+
+          ports:
+            - name: http
+              containerPort: 41783
+              protocol: TCP
+
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 30
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          volumeMounts:
+            - name: secrets-store
+              mountPath: /mnt/secrets-store
+              readOnly: true
+
+      volumes:
+        - name: secrets-store
+          csi:
+            driver: secrets-store-gke.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: greentech-db

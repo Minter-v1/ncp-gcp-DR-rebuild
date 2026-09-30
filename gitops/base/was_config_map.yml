@@ -1,0 +1,37 @@
+# MARK: - WAS Runtime Configuration
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: greentech-was-config
+  namespace: greentech
+data:
+  # MARK: - Application
+  SPRING_PROFILES_ACTIVE: "prod"
+  SERVER_PORT: "41783"
+  TZ: "Asia/Seoul"
+  JAVA_OPTS: "-XX:MaxRAMPercentage=75.0 -Duser.timezone=Asia/Seoul"
+
+  # MARK: - Database
+  DB_POOL_SIZE: "10"
+
+  # MARK: - Security
+  ACCESS_TOKEN_TTL: "PT1H"
+  ADMIN_RESET_PASSWORD: "false"
+
+  # MARK: - CORS
+  CORS_ALLOWED_ORIGINS: "http://localhost:3000"
+
+  # MARK: - Logging
+  LOG_LEVEL_APP: "INFO"
+  LOG_LEVEL_SQL: "WARN"
+  LOG_DIR: "/app/logs"
+  ACCESS_LOG_MAX_DAYS: "7"
+  LOG_MAX_HISTORY: "7"
+  LOG_MAX_FILE_SIZE: "10MB"
+  LOG_TOTAL_SIZE_CAP: "100MB"
+
+  # MARK: - NCP Object Storage
+  NCP_STORAGE_ENDPOINT: "https://kr.object.ncloudstorage.com"
+  NCP_STORAGE_REGION: "kr-standard"
+  NCP_STORAGE_BUCKET: "greentech-dr-files"

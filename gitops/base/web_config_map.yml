@@ -1,0 +1,10 @@
+# MARK: - Web Runtime Configuration
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: greentech-web-config
+  namespace: greentech
+data:
+  WAS_BASE_URL: "http://greentech-was:41783"
+  WEB_PUBLIC_ORIGIN: "http://136.81.72.229:3000"

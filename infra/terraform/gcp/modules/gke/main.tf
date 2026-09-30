@@ -69,6 +69,12 @@ resource "google_container_cluster" "standby" {
     workload_pool = "${var.project_id}.svc.id.goog"
   }
 
+  // MARK: - Secret Manager Add-on
+
+  secret_manager_config {
+    enabled = true
+  }
+
   enable_shielded_nodes = true
 
   // NOTE: - Cluster 생성에 필요한 임시 기본 Node Pool도 전용 계정을 사용
@@ -145,4 +151,39 @@ resource "google_container_node_pool" "standby" {
       enable_integrity_monitoring = true
     }
   }
+}
+
+// MARK: - WAS Runtime Service Account
+
+resource "google_service_account" "was_runtime" {
+  project      = var.project_id
+  account_id   = "${var.resource_prefix}-was"
+  display_name = "Greentech WAS Runtime Service Account"
+}
+
+// MARK: - Cloud SQL Client 권한
+
+resource "google_project_iam_member" "was_cloud_sql_client" {
+  project = var.project_id
+  role    = "roles/cloudsql.client"
+  member  = "serviceAccount:${google_service_account.was_runtime.email}"
+}
+
+// MARK: - Secret Manager 최소 권한
+
+resource "google_secret_manager_secret_iam_member" "was_secret_accessor" {
+  for_each = var.was_secret_ids
+
+  project   = var.project_id
+  secret_id = each.value
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.was_runtime.email}"
+}
+
+// MARK: - Workload Identity 연결
+
+resource "google_service_account_iam_member" "was_workload_identity" {
+  service_account_id = google_service_account.was_runtime.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "serviceAccount:${var.project_id}.svc.id.goog[${var.was_namespace}/${var.was_service_account_name}]"
 }

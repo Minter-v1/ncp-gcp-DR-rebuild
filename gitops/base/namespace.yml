@@ -1,0 +1,9 @@
+# MARK: - Greentech Namespace
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: greentech
+  labels:
+    app.kubernetes.io/part-of: greentech
+    environment: standby

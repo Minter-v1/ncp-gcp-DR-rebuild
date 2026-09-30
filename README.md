@@ -72,7 +72,7 @@ flowchart LR
     GitHub[GitHub Actions] -->|Build and update image tag| ArgoCD
 ```
 
-데이터베이스 엔진·버전과 기존 스키마를 분석한 뒤 실제 복제 기술과 배치 방식을 확정합니다. 검증되지 않은 Zero RPO나 Active-Active Multi-Writer를 전제로 하지 않습니다.
+DB는 NCP VM의 MySQL 8.4 Primary에서 GCP Compute Engine의 MySQL 8.4 Standby로 GTID 기반 비동기 복제합니다. 설계 근거와 Failover·Failback 절차는 [ADR-001](docs/adr-001-database-topology.md)에 기록합니다. 검증되지 않은 Zero RPO나 Active-Active Multi-Writer를 전제로 하지 않습니다.
 
 ## Architecture Scope
 
@@ -80,7 +80,7 @@ flowchart LR
 |---|---|---|
 | NCP Active | VM, Docker Compose, Web·WAS·Primary DB | 장애 주입 대상과 평시 서비스 처리 |
 | GCP Standby | GKE Standard, 멀티존 Node Pool, Web·WAS | 전환 트래픽 수용과 자동 확장 |
-| Database DR | Primary-Standby 복제, 승격, 재연결, Failback | RPO·복제 지연·데이터 정합성 |
+| Database DR | NCP MySQL Primary, GCP Compute Engine MySQL Standby | RPO·복제 지연·승격·Failback |
 | Global Traffic | Cloudflare Load Balancing 기반 GSLB | 장애 감지와 단계적 트래픽 전환 |
 | CI | GitHub Actions | 이미지 빌드와 GitOps 저장소 갱신 |
 | CD | Argo CD, Argo Rollouts | Pull 기반 배포와 카나리 자동 제어 |
@@ -89,6 +89,17 @@ flowchart LR
 | Observability | Prometheus, Grafana, Loki | 장애 중에도 유지되는 통합 관제 |
 | Provisioning | Terraform, Ansible | 반복 가능한 생성과 구성 자동화 |
 | Verification | k6, Failover Probe, DB 검증 스크립트 | 동일 조건의 Before/After 측정 |
+
+## Application Baseline
+
+| Layer | Source | Stack | DR Characteristic |
+|---|---|---|---|
+| Web | [greentech-web](https://github.com/Minter-v1/greentech-web) | Next.js 16, React 19, Node.js 24 | HTTP-only JWT 쿠키, 서버 메모리 세션 없음 |
+| WAS | [greentech-was](https://github.com/Minter-v1/greentech-was) | Spring Boot 4, Java 21 | Stateless JWT 인증, Actuator Probe 지원 |
+| Database | greentech-was Flyway Schema | MySQL 8.4, InnoDB, 25 Tables | Primary-Standby 복제와 승격 대상 |
+| File Storage | greentech-was Attachment Module | Local 또는 S3 호환 Object Storage | DB 외부의 별도 DR 데이터 경로 |
+
+상세 분석과 DR 적용 항목은 [Application Baseline](docs/application-baseline.md)에 기록합니다.
 
 ## Design Principles
 
